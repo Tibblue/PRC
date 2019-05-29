@@ -12,6 +12,7 @@
     4. NodeJS check :heavy_check_mark:
 3. Iniciar o Vue (front-end)
     1. Abrir terminal e entrar na diretoria ["frontend"](https://github.com/Tibblue/PRC/tree/master/projeto/frontend)
+    2. Instalar o Vue com npm `npm install -g @vue/cli`
     2. Executar `npm install`
     3. Executar `npm run serve` e deixar a correr
     4. Vue check :heavy_check_mark:
