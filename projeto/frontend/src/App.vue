@@ -4,16 +4,11 @@
       <v-toolbar-items>
         <v-btn flat @click="goToHome()"><h2>Home</h2></v-btn>
         <v-btn flat @click="goToTable('animes')"><h3>Anime</h3></v-btn>
-        <v-btn flat @click="goToTable('persons')"><h3>Director/Writer</h3></v-btn>
-        <v-btn flat @click="goToTable('networks')"><h3>Network</h3></v-btn>
+        <v-btn flat @click="goToTable('producers')"><h3>Producer</h3></v-btn>
+        <v-btn flat @click="goToTable('studios')"><h3>Studio</h3></v-btn>
       </v-toolbar-items>
     </v-toolbar>
 
-    <v-layout ma-3>
-      <span v-if="this.$session.get('animesSimple')">animeSimple</span>
-      <span v-if="this.$session.get('personSimple')">personSimple</span>
-      <span v-if="this.$session.get('networkSimple')">networkSimple</span>
-    </v-layout>
 
     <!-- <v-container> -->
     <!-- <v-flex ma-5> -->

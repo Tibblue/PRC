@@ -18,14 +18,14 @@ export default new Router({
       component: () => import('./views/TabelaAnime.vue')
     },
     {
-      path: '/persons',
-      name: 'personList',
-      component: () => import('./views/TabelaPerson.vue')
+      path: '/producers',
+      name: 'producerList',
+      component: () => import('./views/TabelaProducer.vue')
     },
     {
-      path: '/networks',
-      name: 'networkList',
-      component: () => import('./views/TabelaNetwork.vue')
+      path: '/studios',
+      name: 'studioList',
+      component: () => import('./views/TabelaStudio.vue')
     },
     {
       path: '/animes/:id',
@@ -33,14 +33,14 @@ export default new Router({
       component: () => import('./views/ConsultaAnime.vue')
     },
     {
-      path: '/persons/:id',
-      name: 'personInfo',
-      component: () => import('./views/ConsultaPerson.vue')
+      path: '/producers/:id',
+      name: 'producerInfo',
+      component: () => import('./views/ConsultaProducer.vue')
     },
     {
-      path: '/networks/:id',
-      name: 'networkInfo',
-      component: () => import('./views/ConsultaNetwork.vue')
+      path: '/studios/:id',
+      name: 'studioInfo',
+      component: () => import('./views/ConsultaStudio.vue')
     }
   ]
 })

@@ -4,39 +4,58 @@
 
     <v-flex>
       <v-card>
-        <v-card-text class="text-xs-center">
-          <h1 v-if="this.label"> {{this.label}} </h1>
-          <h1 v-else> {{fixName(this.idAnime)}} </h1>
-        </v-card-text>
+        <v-layout>
+          <v-flex xs4>
+            <v-img
+              class="white--text"
+              width="266"
+              ratio=1.6
+              :src="this.img"
+            />
+          </v-flex>
+          <v-flex xs4>
+            <v-card-text class="text-xs-center">
+              <h1> {{this.title}} </h1>
+              <h2> {{this.title_english}} </h2>
+              <h2> {{this.title_japanese}} </h2>
+            </v-card-text>
+          </v-flex>
+          <v-flex xs4>
+            <v-card-text class="text-xs-center">
+              <h1> {{this.type}} </h1>
+              <!-- <h2> {{this.score}} </h2> -->
+            </v-card-text>
+          </v-flex>
+        </v-layout>
 
         <v-container grid-list-sm>
           <v-layout row wrap>
             <v-flex xs6 lg4>
               <cardList
-                name="Directors"
-                :list="directorsSimple"
-                route="persons"
+                name="Genres"
+                :list="genresSimple"
+                route="genres"
               ></cardList>
             </v-flex>
             <v-flex xs6 lg4>
               <cardList
-                name="Writers"
-                :list="writersSimple"
-                route="persons"
+                name="Producers"
+                :list="producersSimple"
+                route="producers"
               ></cardList>
             </v-flex>
             <v-flex xs12 lg4>
               <cardList
-                name="Networks"
-                :list="networksSimple"
-                route="networks"
+                name="Studio"
+                :list="studiosSimple"
+                route="studios"
               ></cardList>
             </v-flex>
           </v-layout>
 
-          <!-- <span>{{this.directorsSimple}}</span> -->
-          <!-- <span>{{this.writersSimple}}</span> -->
-          <!-- <span>{{this.networksSimple}}</span> -->
+          <!-- <span>{{this.genresSimple}}</span> -->
+          <!-- <span>{{this.producersSimple}}</span> -->
+          <!-- <span>{{this.studiosSimple}}</span> -->
 
         </v-container>
       </v-card>
@@ -68,20 +87,23 @@
     },
     data: () => ({
       idAnime: '',
+      title: '',
+      title_english: '',
+      title_japanese: '',
+      img: '',
+      type: '',
       animeResponse: {},
-      label: '',
-      directors: [],
-      writers: [],
-      networks: [],
-      directorsSimple: [],
-      writersSimple: [],
-      networksSimple: [],
-      dbpedia: ''
+      genres: [],
+      producers: [],
+      studios: [],
+      genresSimple: [],
+      producersSimple: [],
+      studiosSimple: []
     }),
     mounted: async function (){
       this.idAnime = this.$route.params.id
       try{
-        var response = await axios.get(lhost+'/query/anime_info_id/'+this.idAnime);
+        var response = await axios.get(lhost+'/query/infoBy_id/'+this.idAnime);
         this.animeResponse = response.data.results.bindings
         // console.log(this.animeResponse) // debug
       }
@@ -91,39 +113,52 @@
       this.animeResponse.forEach(item => {
         // console.log(item)
         switch (item.p.value.split('#')[1]) {
-          case "label":
-            this.label = item.o.value
+          case "title":
+            this.title = item.o.value
             break;
-          case "hasDirector":
-            this.directors.push(item.o.value.split('#PERSON_')[1])
+          case "title_english":
+            this.title_english = item.o.value
             break;
-          case "hasWriter":
-            this.writers.push(item.o.value.split('#PERSON_')[1])
+          case "title_japanese":
+            this.title_japanese = item.o.value
             break;
-          case "hasNetwork":
-            this.networks.push(item.o.value.split('#NETWORK_')[1])
+          case "img":
+            this.img = item.o.value
             break;
-          case "dbpedia":
-            this.dbpedia = item.o.value
+          case "type":
+            this.type = item.o.value
+            break;
+          case "hasGenre":
+            this.genres.push(item.o.value.split('#')[1])
+            break;
+          case "hasProducer":
+            this.producers.push(item.o.value.split('#')[1])
+            break;
+          case "hasStudio":
+            this.studios.push(item.o.value.split('#')[1])
             break;
           default:
             console.log("FDS")
             break;
         }
       })
-      if(this.$session.has('directorsSimple'))
-        this.directorsSimple = this.$session.get('directorsSimple')
-      else
-        this.$session.set('directorsSimple',this.directors.map(this.simplify))
-      this.writersSimple = this.writers.map(this.simplify)
-      this.networksSimple = this.networks.map(this.simplify)
+      this.genresSimple = this.genres.map(this.simplify)
+      this.producersSimple = this.producers.map(this.simplify)
+      this.studiosSimple = this.studios.map(this.simplify)
     },
     methods: {
       fixName: function (name) {
-        return name.replace(/_/g, " ")
+        name = name.replace(/GENRE_/g, "")
+        name = name.replace(/PRODUCER_/g, "")
+        name = name.replace(/STUDIO_/g, "")
+        name = name.replace(/_/g, " ")
+        return name
       },
       simplify: function (item) {
-        return {id:item}
+        return {
+          id:item,
+          label:this.fixName(item)
+        }
       },
       goBack: function() {
         this.$router.go(-1)

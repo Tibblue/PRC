@@ -1,43 +1,48 @@
 // QUERYS
 module.exports = {
-  anime_label: `
+  anime_titles_img_score: `
 PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
 select distinct * where {
     ?anime a :Anime .
-    OPTIONAL{?anime :label ?label .}
+    ?anime :id ?id .
+    ?anime :title ?title .
+    OPTIONAL{?anime :title_english ?title_english .}
+    ?anime :img ?img .
 }`,
-  anime_info: `
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+  anime_id_title: `
 PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
-PREFIX owl: <http://www.w3.org/2002/07/owl#>
-select distinct * where {
-    ?anime rdf:type :Anime .
-    ?anime :label ?label .
-    ?anime :hasWriter ?writer .
-    ?anime :hasDirector ?director .
-#    ?anime ?relacao ?value .
-#    FILTER ( ?value!=owl:NamedIndividual && ?relacao!=rdf:type)
-} limit 100`,
-  network_id: `
-PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
-select distinct * where {
-    ?network a :Network .
+select ?id ?title where {
+    ?anime a :Anime .
+    ?anime :id ?id .
+    ?anime :title ?title .
 }`,
-  person_id: `
+  producer_id_label: `
 PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
-select distinct * where {
-    ?person a :Person .
+select ?id ?label where {
+    ?producer a :Producer .
+    ?producer :id ?id .
+    ?producer :label ?label .
 }`,
-  writer_id: `
+  studio_id_label: `
 PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
-select distinct (?writer as ?person) ?label where {
-    ?writer a :Person .
-    ?anime :hasWriter ?writer .
+select ?id ?label where {
+    ?studio a :Studio .
+    ?studio :id ?id .
+    ?studio :label ?label .
 }`,
-  director_id: `
+  genre_list: `
 PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
-select distinct (?director as ?person) ?label where {
-    ?director a :Person .
-    ?anime :hasDirector ?director .
+select distinct ?genre where {
+    ?genre a :Genre .
+}`,
+  producer_list: `
+PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
+select distinct ?producer where {
+    ?producer a :Producer .
+}`,
+  studio_list: `
+PREFIX : <http://www.semanticweb.org/kiko/ontologies/2019/projeto#>
+select distinct ?studio where {
+    ?studio a :Studio .
 }`,
 }

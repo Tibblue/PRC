@@ -11,6 +11,8 @@
       <v-flex xs12>
         <v-text-field
           single-line
+          clearable
+          @keyup="checkPage()"
           v-model="searchText"
           prepend-icon="search"
           :label="'Search '+name"
@@ -27,13 +29,9 @@
           <v-btn icon @click="previousPage()">
             <v-icon>{{'fas fa-caret-left'}}</v-icon>
           </v-btn>
-          <v-text-field
-            solo flat readonly
-            single-line
-            class="centered-input"
-            background-color="indigo darken-2"
-            v-model="currentPage"
-          ></v-text-field>
+          <v-flex pa-2 class="text-xs-center">
+            <h1>{{currentPage}}/{{maxPage}}</h1>
+          </v-flex>
           <v-btn icon @click="nextPage()">
             <v-icon>{{'fas fa-caret-right'}}</v-icon>
           </v-btn>
@@ -48,6 +46,7 @@
           v-model="pageSize"
           :items="items"
           label="Elements per Page"
+          @click="checkPage()"
         ></v-combobox>
       </v-flex>
       <v-flex xs1/>
@@ -61,16 +60,14 @@
           >
             <v-card
               flat hover
-              dark color="grey darken-2"
-              @click="itemClicked(card)"
+              dark color="grey darken-3"
+              @click="itemClicked(card.id)"
             >
               <v-container fill-height fluid pa-2>
                 <v-layout fill-height>
-                  <v-flex align-end flexbox>
-                    <span class="title">{{fixName(card.id)}}</span>
-                    <v-spacer v-if="card.label"/>
-                    <span v-if="card.label" class="subtitle">{{card.label}}</span>
-                  </v-flex>
+                  <v-flex xs12 flexbox class="text-xs-center">
+                    <span class="title">{{card.label}}</span>
+                    </v-flex>
                 </v-layout>
               </v-container>
             </v-card>
@@ -85,14 +82,14 @@
   export default {
     props: ["name","list","route"],
     data: () => ({
-      pageSize: 30,
-      items: [20,30,60,100],
+      pageSize: 60,
+      items: [30,60,90],
       searchText: '',
       currentPage: 1,
     }),
     methods: {
-      itemClicked: function (item) {
-        this.$router.push('/'+this.route+'/'+item.id)
+      itemClicked: function (id) {
+        this.$router.push('/'+this.route+'/'+id)
       },
       fixName: function (name) {
         return name.replace(/_/g, " ")
@@ -104,26 +101,29 @@
       previousPage: function () {
         if(this.currentPage>1)
           this.currentPage--
+      },
+      checkPage: function() {
+        var maxPage = Math.ceil(this.filteredList.length/this.pageSize)
+        if(this.currentPage>maxPage)
+          this.currentPage = maxPage||1
       }
     },
     computed: {
+      maxPage() {
+        return Math.ceil(this.filteredList.length/this.pageSize)
+      },
       filteredList() {
         return this.list.filter(item => {
-          var name = item.id
-          return name.toLowerCase().includes(this.searchText.toLowerCase())
+          var label = item.label.toLowerCase()
+          var search_text = this.searchText.toLowerCase()
+          return label.includes(search_text)
         })
       },
       pagedList() {
-        var filtered = this.list.filter((item) => {
-          var name = item.id
-          // var label = item.label
-          return name.toLowerCase().includes(this.searchText.toLowerCase())
-        })
-        var paged = filtered.filter((item,index) => {
+        return this.filteredList.filter((item,index) => {
           return index>=(this.currentPage-1)*this.pageSize
                   && index<this.currentPage*this.pageSize
         })
-        return paged
       }
     }
   }
